@@ -1,0 +1,64 @@
+def greedy_cow_transport(cows,limit=10):
+    """
+    Uses a greedy heuristic to determine an allocation of cows that attempts to
+    minimize the number of spaceship trips needed to transport all the cows. The
+    returned allocation of cows may or may not be optimal.
+    The greedy heuristic should follow the following method:
+
+    1. As long as the current trip can fit another cow, add the largest cow that will fit
+        to the trip
+    2. Once the trip is full, begin a new trip to transport the remaining cows
+
+    Does not mutate the given dictionary of cows.
+
+    Parameters:
+    cows - a dictionary of name (string), weight (int) pairs
+    limit - weight limit of the spaceship (an int)
+    
+    Returns:
+    A list of lists, with each inner list containing the names of cows
+    transported on a particular trip and the overall list containing all the
+    trips
+    """
+    import copy
+    
+    cow_list = copy.deepcopy(cows)
+    travel_log = []
+    
+    #while ainda tem vacas transportáveis, nova viagem
+    while True:
+        transportable_cow_left = False
+        #viagens a fazer?
+        for cow in cow_list.keys():
+            if cow_list[cow] <= limit:
+                transportable_cow_left = True
+        if transportable_cow_left == False:
+            break
+        
+
+        limit_left = limit
+        travel = [] 
+        
+        while limit_left > 0:
+            
+            fattest_fit = [None,0]
+            
+            #próxima vaca a embarcar
+            for cow in cow_list.keys():
+                if cow_list[cow] >= fattest_fit[1] and cow_list[cow] <= limit_left:
+                    fattest_fit = [ cow , cow_list[cow] ]
+            #checa se tem vaca embarcável
+            if fattest_fit[0] == None:
+                break
+            #embarque da vaca
+            travel.append( fattest_fit[0] )
+    
+            #atualização do limite e lista
+            limit_left -= fattest_fit[1]       
+            cow_list.pop( fattest_fit[0] )
+    
+            
+        #viagem
+        travel_log.append(travel)
+    
+    return travel_log
